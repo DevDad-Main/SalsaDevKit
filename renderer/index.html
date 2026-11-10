@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://avatars.githubusercontent.com; script-src 'self'">
+  <title>SalsaDevKit</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- ── title bar (drag region) ─────────────────────────────── -->
+  <header class="titlebar">
+    <div class="tb-left">
+      <img src="../assets/logo.png" alt="" class="tb-logo">
+      <span class="tb-name">SalsaDevKit</span>
+      <span class="chip chip-ver mono" id="verChip"></span>
+    </div>
+    <div class="tb-right no-drag">
+      <button class="tb-btn" id="btnMin" title="Minimize">
+        <svg viewBox="0 0 16 16" width="14" height="14"><path d="M3 8h10" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+      </button>
+      <button class="tb-btn tb-close" id="btnClose" title="Close">
+        <svg viewBox="0 0 16 16" width="14" height="14"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="body">
+    <!-- ── sidebar ───────────────────────────────────────────── -->
+    <nav class="sidebar">
+      <button class="nav-item" data-page="projects">
+        <svg viewBox="0 0 16 16" width="17" height="17"><path d="M1.5 4A1.5 1.5 0 0 1 3 2.5h3.2l1.6 1.8H13A1.5 1.5 0 0 1 14.5 5.8V12a1.5 1.5 0 0 1-1.5 1.5H3A1.5 1.5 0 0 1 1.5 12V4z" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>
+        <span>Projects</span>
+      </button>
+      <button class="nav-item" data-page="services">
+        <svg viewBox="0 0 16 16" width="17" height="17"><path d="M1.5 8h3l2-4.5L9 12.5 11 8h3.5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Services</span><em class="nav-tag">M2</em>
+      </button>
+      <button class="nav-item active" data-page="toolchain">
+        <svg viewBox="0 0 16 16" width="17" height="17"><rect x="3.5" y="3.5" width="9" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M6 1.8v1.7M10 1.8v1.7M6 12.5v1.7M10 12.5v1.7M1.8 6h1.7M1.8 10h1.7M12.5 6h1.7M12.5 10h1.7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <span>Toolchain</span>
+      </button>
+      <button class="nav-item" data-page="github">
+        <svg viewBox="0 0 16 16" width="17" height="17"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z" fill="currentColor"/></svg>
+        <span>GitHub</span>
+      </button>
+      <button class="nav-item" data-page="settings">
+        <svg viewBox="0 0 16 16" width="17" height="17"><circle cx="8" cy="8" r="2.2" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M8 1.5v2M8 12.5v2M14.5 8h-2M3.5 8h-2M12.6 3.4l-1.4 1.4M4.8 11.2l-1.4 1.4M12.6 12.6l-1.4-1.4M4.8 4.8L3.4 3.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <span>Settings</span>
+      </button>
+
+      <div class="side-foot">
+        <div class="env-status"><span class="dot dot-ok" id="envDot"></span><span id="envLabel">Checking…</span></div>
+        <div class="root-chip mono" id="rootChip" title=""></div>
+      </div>
+    </nav>
+
+    <!-- ── content ───────────────────────────────────────────── -->
+    <main class="content">
+
+      <!-- Projects -->
+      <section class="page" id="page-projects">
+        <div class="page-head">
+          <div>
+            <h1>Projects</h1>
+            <p class="sub">Your repos and folders on the persistent drive — clone from GitHub, open in VS Code, pull changes. Private repos use your GitHub sign-in credentials.</p>
+          </div>
+        </div>
+
+        <div class="card proj-actions">
+          <h3 class="card-label">Clone or add</h3>
+          <div class="proj-row">
+            <input class="input mono" id="projCloneUrl" placeholder="owner/repo  or  https://github.com/you/repo" spellcheck="false">
+            <button class="btn btn-primary" id="btnProjClone">
+              <svg viewBox="0 0 16 16" width="14" height="14"><path d="M8 2.5v9M4.5 8l3.5 3.5L11.5 8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Clone from GitHub
+            </button>
+          </div>
+          <div class="proj-row">
+            <input class="input mono" id="projFolderPath" placeholder="I:\devdad\Projects\my-app   (existing folder)" spellcheck="false">
+            <button class="btn btn-ghost" id="btnProjAdd">Add folder</button>
+          </div>
+          <p class="sub small proj-hint">Clones land in <span class="mono" id="projCloneDest"></span>. Run/Stop + terminal dock arrive next.</p>
+        </div>
+
+        <div class="proj-list" id="projList"></div>
+
+        <div class="card log-card">
+          <h3 class="card-label">Git activity</h3>
+          <pre class="log-console" id="projLog"></pre>
+        </div>
+      </section>
+
+      <!-- Services (M2) -->
+      <section class="page" id="page-services">
+        <div class="empty-state">
+          <div class="empty-icon">
+            <svg viewBox="0 0 16 16" width="34" height="34"><path d="M1.5 8h3l2-4.5L9 12.5 11 8h3.5" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h2>No services yet</h2>
+          <p>Everything you start from a project shows up here — process, port, uptime and an output tail with one-click stop. It arrives together with Projects in M2.</p>
+        </div>
+      </section>
+
+      <!-- Toolchain -->
+      <section class="page active" id="page-toolchain">
+        <div class="card how-card">
+          <h3 class="card-label">How this works</h3>
+          <div class="how-cols">
+            <div class="how-col">
+              <p><b>Provisioning.</b> Each runtime is an official portable build downloaded straight into your DevKit root on the persistent drive — no installer, no admin. After its first install the SHA-256 hash is pinned in <span class="mono">manifest.json</span>, and re-running never touches what's already there (idempotent). “Provision all” installs whatever is missing; per-runtime Reinstall force-refreshes one.</p>
+            </div>
+            <div class="how-col">
+              <p><b>Using them while coding.</b> Put the launchers folder on your PATH, then call tools from anywhere:</p>
+<pre class="how-code mono">:: cmd
+set PATH=I:\Apps\DevKit\bin;%PATH%
+
+# pwsh
+$env:PATH = "I:\Apps\DevKit\bin;$env:PATH"</pre>
+              <p><span class="mono">node · npm · bun · git · python · pip · code</span> all resolve to the portable copies. In VS Code, add this to your settings.json so its integrated terminal inherits them:</p>
+<pre class="how-code mono">"terminal.integrated.env.windows": {
+  "PATH": "I:\\Apps\\DevKit\\bin;${env:PATH}"
+}</pre>
+              <p>Package caches (npm, pip) already live on I:, so installs survive session wipes and re-hydrate fast. Launching <span class="mono">code</span> from bin\ also wires your GitHub credentials into VS Code's terminal (<span class="mono">GIT_CONFIG_GLOBAL</span>), so <span class="mono">git push</span> works out of the box once you've signed in on the GitHub page.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-head">
+          <div>
+            <h1>Runtimes</h1>
+            <p class="sub">Portable runtimes in <span class="mono" id="tcRoot"></span>. Everything installs to your persistent drive — no admin, survives session wipes.</p>
+          </div>
+          <div class="head-actions">
+            <button class="btn btn-ghost" id="btnTcRefresh" title="Re-scan disk">
+              <svg viewBox="0 0 16 16" width="14" height="14"><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2.5v3h-3" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Refresh
+            </button>
+            <button class="btn btn-primary" id="btnTcProvision">
+              <svg viewBox="0 0 16 16" width="14" height="14"><path d="M8 2.5v9M4.5 8l3.5 3.5L11.5 8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Provision all
+            </button>
+          </div>
+        </div>
+
+        <div class="rt-grid" id="rtGrid"></div>
+
+        <div class="card shims-card">
+          <h3 class="card-label">Launchers</h3>
+          <p class="sub small">Drop this folder on your PATH (or use it directly) to call tools from any shell:</p>
+          <div class="shim-row mono" id="shimRow"></div>
+        </div>
+
+        <div class="card log-card">
+          <h3 class="card-label">Provisioner log</h3>
+          <pre class="log-console" id="tcLog"></pre>
+        </div>
+      </section>
+
+      <!-- GitHub -->
+      <section class="page" id="page-github">
+        <div class="page-head">
+          <div>
+            <h1>GitHub</h1>
+            <p class="sub">Sign in to clone, push and pull your own repos from this machine. Credentials live on your persistent drive — never on C:.</p>
+          </div>
+        </div>
+
+        <!-- unauthenticated -->
+        <div id="ghUnauth">
+          <div class="card gh-hero">
+            <button class="gh-btn" id="btnGhSignIn">
+              <svg viewBox="0 0 16 16" width="20" height="20"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z" fill="currentColor"/></svg>
+              Sign in with GitHub
+            </button>
+            <p class="sub small gh-hero-sub">Opens your browser to sign in at github.com — approve once and you're done.<br>No password or token ever touches this machine.</p>
+
+            <div class="gh-status hidden" id="ghStatusBox">
+              <span class="dot dot-warn"></span><span id="ghStatusText">Waiting for the browser…</span>
+              <button class="btn btn-ghost sm" id="btnGhCancel">Cancel</button>
+            </div>
+
+            <!-- one-time setup, only shown until a client ID is saved -->
+            <div class="gh-setup hidden" id="ghSetupBox">
+              <p><b>One-time setup (about 2 minutes).</b> SalsaDevKit needs an OAuth App to talk to GitHub. Create it once under your account and paste the Client ID — it's stored on this machine only.</p>
+              <ol class="setup-steps">
+                <li>Open <a class="linklike" href="#" id="ghHowto">github.com/settings/developers</a></li>
+                <li><b>New OAuth App</b> → name: anything (e.g. “SalsaDevKit”), callback URL: <span class="mono">http://127.0.0.1:8465/callback</span>, no client secret needed</li>
+                <li>Copy the <b>Client ID</b>, paste it below — and if you entered a different callback URL when creating the app, paste that too (it must match exactly)</li>
+              </ol>
+              <div class="setup-row">
+                <input class="input mono" id="ghClientId" placeholder="Client ID (e.g. Ov23… or Iv1.…)" spellcheck="false">
+                <button class="btn btn-primary" id="btnGhSaveId">Save &amp; continue</button>
+              </div>
+              <div class="setup-row">
+                <input class="input mono" id="ghCallback" placeholder="http://127.0.0.1:8465/callback" spellcheck="false" value="http://127.0.0.1:8465/callback">
+              </div>
+              <p class="sub small setup-cb-hint">Callback URL — must match what you registered on the app exactly (edit your app → Callback URL = <span class="mono">http://127.0.0.1:8465/callback</span>).</p>
+              <div class="setup-row">
+                <input class="input mono" id="ghClientSecret" type="password" placeholder="Client Secret — only if you generated one" spellcheck="false">
+              </div>
+              <p class="sub small setup-cb-hint">Leave blank unless you clicked “Generate client secret” when creating the app — GitHub then requires it at sign-in (find/reset it on your app's settings page). Stored on this machine only.</p>
+            </div>
+          </div>
+
+          <div class="card gh-device">
+            <div class="device-head">
+              <b>Prefer a one-time code?</b>
+              <span class="sub small">Device flow — no callback URL involved, works with any OAuth App setup.</span>
+            </div>
+            <button class="btn btn-ghost" id="btnGhDevice">Sign in with device code</button>
+            <div class="device-box hidden" id="ghDeviceBox">
+              <p class="sub small device-status" id="ghDeviceStatus">Requesting a one-time code…</p>
+              <div class="device-code mono hidden" id="ghDeviceCode"></div>
+              <button class="btn btn-ghost sm device-open" id="btnGhDeviceOpen">Open github.com/login/device in your browser</button>
+              <button class="btn btn-ghost sm danger" id="btnGhDeviceCancel">Cancel</button>
+            </div>
+          </div>
+
+          <details class="card gh-advanced">
+            <summary>Advanced: sign in with a personal access token instead</summary>
+            <p class="sub small">Paste a fine-grained or classic PAT with <span class="mono">repo</span> + <span class="mono">read:user</span>. We validate it against the API before storing.</p>
+            <div class="setup-row">
+              <input class="input mono" id="ghPat" type="password" placeholder="github_pat_… or ghp_…" spellcheck="false">
+              <button class="btn btn-ghost" id="btnGhPat">Connect</button>
+            </div>
+          </details>
+
+          <div class="gh-reset-row">
+            <button class="btn btn-ghost sm danger" id="btnGhReset" title="Cancels any stuck sign-in and clears the saved Client ID + Secret so you can start fresh">
+              Reset GitHub — clear saved Client ID / Secret &amp; cancel stuck sign-in
+            </button>
+          </div>
+        </div>
+
+        <!-- authenticated -->
+        <div id="ghAuthed" class="hidden">
+          <div class="card gh-profile">
+            <img class="avatar" id="ghAvatar" alt="" src="">
+            <div class="profile-info">
+              <div class="profile-name"><span id="ghLogin"></span> <span class="pill pill-ok" id="ghTypePill"></span></div>
+              <p class="sub small" id="ghMeta"></p>
+              <div class="scope-row" id="ghScopes"></div>
+            </div>
+            <button class="btn btn-ghost danger" id="btnGhSignout">Sign out</button>
+          </div>
+        </div>
+
+        <div class="msg-line hidden" id="ghMsg"></div>
+      </section>
+
+      <!-- Settings -->
+      <section class="page" id="page-settings">
+        <div class="page-head">
+          <div>
+            <h1>Settings</h1>
+            <p class="sub">One place for everything — root, appearance, hotkeys. Stored on your persistent drive.</p>
+          </div>
+        </div>
+
+        <div class="set-grid">
+          <div class="card set-card">
+            <h3 class="card-label">DevKit root</h3>
+            <p class="sub small">Where runtimes, caches and all state live. Must be on a persistent drive — C: is wiped between sessions.</p>
+            <label class="field-label" for="setRoot">Root path</label>
+            <input class="input mono" id="setRoot" spellcheck="false">
+            <div class="btn-row">
+              <button class="btn btn-primary" id="btnSetRoot">Apply &amp; restart</button>
+            </div>
+            <p class="warn-line hidden" id="rootWarn">⚠ That path is on C: — it will be wiped when the session ends.</p>
+          </div>
+
+          <div class="card set-card">
+            <h3 class="card-label">Appearance</h3>
+            <label class="field-label" for="setTheme">Theme</label>
+            <select class="input" id="setTheme">
+              <option value="dark">Dark</option>
+              <option value="light">Light</option>
+              <option value="system">System (Windows)</option>
+            </select>
+            <label class="field-label">Accent</label>
+            <div class="swatch-row" id="accentRow"></div>
+            <label class="check-line"><input type="checkbox" id="setMotion"> Reduce motion</label>
+          </div>
+
+          <div class="card set-card">
+            <h3 class="card-label">GitHub &amp; data</h3>
+            <p class="sub small">Sign-in state, credentials and client settings live on your persistent drive — clear them any time.</p>
+            <div class="btn-row">
+              <button class="btn btn-ghost" id="btnSetGhSignout">Sign out of GitHub</button>
+              <button class="btn btn-ghost danger" id="btnSetGhReset">Clear saved Client ID / Secret</button>
+            </div>
+          </div>
+
+          <div class="card set-card">
+            <h3 class="card-label">Hotkey</h3>
+            <p class="sub small">Summons this window from anywhere. SalsaSpotlight keeps Alt+Space and Ctrl+Space.</p>
+            <label class="field-label" for="setHotkey">Shortcut</label>
+            <input class="input mono" id="setHotkey" placeholder="Ctrl+Shift+D" spellcheck="false">
+            <div class="btn-row"><button class="btn btn-ghost" id="btnSetHotkey">Save hotkey</button></div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<div class="toast hidden" id="toast"></div>
+<script src="renderer.js"></script>
+</body>
+</html>

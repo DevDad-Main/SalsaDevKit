@@ -1,0 +1,14 @@
+{
+  "name": "salsadevkit",
+  "version": "0.1.0",
+  "description": "A dev box that fits in a folder — portable toolchain, GitHub auth and project control for SalsaNOW / GeForce NOW and locked-down Windows PCs",
+  "main": "main.js",
+  "author": "DevDad-Main",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^44.7.0"
+  }
+}

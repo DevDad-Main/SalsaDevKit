@@ -1,0 +1,105 @@
+{
+  "$note": "SalsaDevKit M0 runtime manifest (source of truth, lives with the code). sha256=null means trust-on-first-use: provision.js computes the hash on first install and pins it back into this file automatically. Runtimes install into <DEVKIT_ROOT>, default I:\\Apps\\DevKit.",
+  "runtimes": {
+    "node": {
+      "version": "v24.22.2",
+      "source": "direct",
+      "url": "https://nodejs.org/dist/v24.22.2/node-v24.22.2-win-x64.zip",
+      "hashUrl": "https://nodejs.org/dist/v24.22.2/SHASUMS256.txt",
+      "hashFile": "node-v24.22.2-win-x64.zip",
+      "sha256": "ca1bff5d8ead13c9f2ea404a176db46bd430704d5b5113734049fa365e7799e2",
+      "dest": "runtimes\\node",
+      "extract": {
+        "type": "zip-inner"
+      },
+      "assumeInstalledIf": "node.exe"
+    },
+    "bun": {
+      "version": "latest",
+      "source": "github-latest",
+      "repo": "oven-sh/bun",
+      "assetPattern": "^bun-windows-x64\\.zip$",
+      "sha256": "cd2c0fccc78f3ede1f50ca827a15f063eda13d4d150a3d0674f4f6e323d864a5",
+      "dest": "runtimes\\bun",
+      "extract": {
+        "type": "zip-inner"
+      }
+    },
+    "git": {
+      "version": "latest",
+      "source": "github-latest",
+      "repo": "git-for-windows/git",
+      "assetPattern": "^Git-\\d[^/]*-64-bit\\.zip$",
+      "fallbackAssetPattern": "^MinGit-\\d[^/]*-64-bit\\.zip$",
+      "sha256": "e3bf78351fe777fba47ddee5950082f8a98bb0f02604fdc7ba3ee2cb68ffa877",
+      "dest": "runtimes\\git",
+      "extract": {
+        "type": "zip-find-file",
+        "markerFile": "cmd\\git.exe"
+      }
+    },
+    "python": {
+      "version": "3.13-latest",
+      "source": "python-ftp",
+      "minor": "3.13",
+      "sha256": "9e35319bffedab8b36ad44d8f377cb4f1733bcec257a0b6d04d94f01486ddb38",
+      "dest": "runtimes\\python",
+      "extract": {
+        "type": "zip-flat"
+      },
+      "post": [
+        "enable-site",
+        "get-pip"
+      ]
+    },
+    "vscode": {
+      "version": "stable",
+      "source": "direct",
+      "url": "https://update.code.visualstudio.com/latest/win32-x64-archive/stable",
+      "$hashNote": "No official hash endpoint reachable from GFN (code.visualstudio.com/sha/download now serves the file itself) — sha256 is pinned trust-on-first-use by provision.js on first download.",
+      "sha256": "33cf166a751090fe7d244bf0e594e3c69c832d5ae2af1769140ad82a35ea1e0b",
+      "dest": "runtimes\\vscode",
+      "extract": {
+        "type": "zip-find-file",
+        "markerFile": "Code.exe",
+        "subfolder": "code"
+      }
+    }
+  },
+  "shims": {
+    "node.cmd": [
+      "<root>\\runtimes\\node",
+      "<root>\\runtimes\\node\\node.exe"
+    ],
+    "npm.cmd": [
+      "<root>\\runtimes\\node",
+      "<root>\\runtimes\\node\\npm.cmd",
+      "set \"npm_config_cache=<root>\\cache\\npm\""
+    ],
+    "bun.cmd": [
+      "<root>\\runtimes\\bun",
+      "<root>\\runtimes\\bun\\bun.exe"
+    ],
+    "git.cmd": [
+      "<root>\\runtimes\\git\\cmd",
+      "<root>\\runtimes\\git\\cmd\\git.exe"
+    ],
+    "python.cmd": [
+      "<root>\\runtimes\\python",
+      "<root>\\runtimes\\python\\python.exe"
+    ],
+    "pip.cmd": [
+      "<root>\\runtimes\\python",
+      "<root>\\runtimes\\python\\python.exe -m pip",
+      "set \"PIP_CACHE_DIR=<root>\\cache\\pip\""
+    ],
+    "code.cmd": [
+      "<root>",
+      "<root>\\runtimes\\vscode\\code\\bin\\code.cmd --user-data-dir=<root>\\vscode\\data --extensions-dir=<root>\\vscode\\ext",
+      "set \"GIT_CONFIG_GLOBAL=<root>\\data\\gitconfig\""
+    ]
+  },
+  "$shimNotes": {
+    "code.cmd": "Delegates to VS Code's own bundled CLI (bin\\code.cmd sets ELECTRON_RUN_AS_NODE=1 and runs cli.js) — calling Code.exe directly launches the full GUI even for --version. Its %~dp0-relative paths survive VS Code self-updates. GIT_CONFIG_GLOBAL wires VS Code's integrated terminal to the portable git config, so GitHub credentials + identity from I: work in its terminal without any user setup (no-op until the file exists after sign-in)."
+  }
+}
